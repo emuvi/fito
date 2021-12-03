@@ -1,0 +1,11 @@
+[package]
+name = "fito"
+description = "fito - File System Tool Box"
+repository = "https://github.com/emuvi/fito/"
+authors = ["Éverton M. Vieira"]
+license = "LGPL-3.0-only"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+clap = "2"

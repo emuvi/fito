@@ -1,0 +1,45 @@
+use clap::{App, Arg, ArgMatches};
+
+pub fn parse<'a>() -> ArgMatches<'a> {
+    App::new("fito")
+        .version(clap::crate_version!())
+        .author("Éverton M. Vieira <everton.muvi@gmail.com>")
+        .about("File System Tool Box")
+        .arg(
+            Arg::with_name("speed")
+                .short("s")
+                .long("speed")
+                .value_name("NUMBER")
+                .default_value("4")
+                .takes_value(true)
+                .required(false)
+                .help("How fast should I go")
+        )
+        .arg(
+            Arg::with_name("input")
+                .short("i")
+                .long("input")
+                .value_name("PATH")
+                .takes_value(true)
+                .required(true)
+                .help("From where the files will come.")
+        )
+        .arg(
+            Arg::with_name("output")
+                .short("o")
+                .long("output")
+                .value_name("PATH")
+                .takes_value(true)
+                .required(true)
+                .help("To where the files will go.")
+        )
+        .arg(
+            Arg::with_name("mirror")
+                .short("m")
+                .long("mirror")
+                .takes_value(false)
+                .required(false)
+                .help("Mirrors the input in the output.")
+        )
+        .get_matches()
+}
