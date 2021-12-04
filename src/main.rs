@@ -9,14 +9,29 @@ fn main() -> FitoResult<()> {
 	if let Some(matches) = args.subcommand_matches("compare") {
 		let input = matches.value_of("input").unwrap();
 		let output = matches.value_of("output").unwrap();
-		let only_diffs = matches.is_present("only_diffs");
-		// TODO - Implement if it is to check everything or not.
-		compare(input.into(), output.into(), only_diffs)?;
+		let only_diffs = matches.is_present("only-diffs");
+		let check_size = matches.is_present("check-size");
+		let check_created = matches.is_present("check-created");
+		let check_modified = matches.is_present("check-modified");
+		let check_accessed = matches.is_present("check-accessed");
+		let check_all = !check_size && !check_created && !check_modified && !check_accessed;
+		compare(input.into(), output.into(), &Compare{
+			only_diffs, check_size, check_created, check_modified, check_accessed, check_all
+		})?;
 	}
 	Ok(())
 }
 
-fn compare(input: PathBuf, output: PathBuf, only_diffs: bool) -> FitoResult<()> {
+struct Compare {
+	only_diffs: bool,
+	check_size: bool,
+	check_created: bool,
+	check_modified: bool,
+	check_accessed: bool,
+	check_all: bool
+}
+
+fn compare(input: PathBuf, output: PathBuf, options: &Compare) -> FitoResult<()> {
 	if !input.exists() {
 		println!("Input not exists.");
 		return Ok(());
@@ -26,13 +41,13 @@ fn compare(input: PathBuf, output: PathBuf, only_diffs: bool) -> FitoResult<()> 
 		return Ok(());
 	}
 	if input.is_dir() {
-		compare_dirs(input, output, only_diffs)
+		compare_dirs(input, output, options)
 	} else {
-		compare_file(input, output, only_diffs)
+		compare_file(input, output, options)
 	}
 }
 
-fn compare_dirs(input: PathBuf, output: PathBuf, only_diffs: bool) -> FitoResult<()> {
+fn compare_dirs(input: PathBuf, output: PathBuf, options: &Compare) -> FitoResult<()> {
 	if !input.exists() {
 		println!(
 			"Comparing dirs: '{}' and '{}': Input not exists.",
@@ -70,15 +85,15 @@ fn compare_dirs(input: PathBuf, output: PathBuf, only_diffs: bool) -> FitoResult
 		let file_type = origin.file_type()?;
 		let destiny = output.join(origin.file_name());
 		if file_type.is_dir() {
-			compare_dirs(origin.path(), destiny, only_diffs)?;
+			compare_dirs(origin.path(), destiny, options)?;
 		} else {
-			compare_file(origin.path(), destiny, only_diffs)?;
+			compare_file(origin.path(), destiny, options)?;
 		}
 	}
 	Ok(())
 }
 
-fn compare_file(input: PathBuf, output: PathBuf, only_diffs: bool) -> FitoResult<()> {
+fn compare_file(input: PathBuf, output: PathBuf, options: &Compare) -> FitoResult<()> {
 	if !input.exists() {
 		println!(
 			"Comparing file: '{}' with '{}': Input not exists.",
@@ -118,42 +133,50 @@ fn compare_file(input: PathBuf, output: PathBuf, only_diffs: bool) -> FitoResult
 	let mut diff_created: Option<bool> = None;
 	let mut diff_modified: Option<bool> = None;
 	let mut diff_accessed: Option<bool> = None;
-	let input_size = input_meta.len();
-	let output_size = output_meta.len();
-	if input_size != output_size {
-		diff_size = true;
+	if options.check_all || options.check_size {
+		let input_size = input_meta.len();
+		let output_size = output_meta.len();
+		if input_size != output_size {
+			diff_size = true;
+		}
 	}
-	if let Ok(input_time) = input_meta.created() {
-		if let Ok(output_time) = output_meta.created() {
-			if input_time != output_time {
-				diff_created = Some(true);
-			} else {
-				diff_accessed = Some(false);
+	if options.check_all || options.check_created {
+		if let Ok(input_time) = input_meta.created() {
+			if let Ok(output_time) = output_meta.created() {
+				if input_time != output_time {
+					diff_created = Some(true);
+				} else {
+					diff_accessed = Some(false);
+				}
 			}
 		}
 	}
-	if let Ok(input_time) = input_meta.modified() {
-		if let Ok(output_time) = output_meta.modified() {
-			if input_time != output_time {
-				diff_modified = Some(true);
-			} else {
-				diff_accessed = Some(false);
+	if options.check_all || options.check_modified {
+		if let Ok(input_time) = input_meta.modified() {
+			if let Ok(output_time) = output_meta.modified() {
+				if input_time != output_time {
+					diff_modified = Some(true);
+				} else {
+					diff_accessed = Some(false);
+				}
 			}
 		}
 	}
-	if let Ok(input_time) = input_meta.accessed() {
-		if let Ok(output_time) = output_meta.accessed() {
-			if input_time != output_time {
-				diff_accessed = Some(true);
-			} else {
-				diff_accessed = Some(false);
+	if options.check_all || options.check_accessed {
+		if let Ok(input_time) = input_meta.accessed() {
+			if let Ok(output_time) = output_meta.accessed() {
+				if input_time != output_time {
+					diff_accessed = Some(true);
+				} else {
+					diff_accessed = Some(false);
+				}
 			}
 		}
 	}
 	let mut has_diffs = false;
 	let mut result = String::new();
 	result.push_str(&format!(
-		"Comparing file: '{}' with '{}': Have",
+		"Comparing file: '{}' with '{}': They have",
 		input.display(),
 		output.display()
 	));
@@ -174,11 +197,11 @@ fn compare_file(input: PathBuf, output: PathBuf, only_diffs: bool) -> FitoResult
 		has_diffs = true;
 	}
 	if !has_diffs {
-		result.push_str(" all same.");
+		result.push_str(" all the same.");
 	} else {
 		result.push_str(".");
 	}
-	let should_print = !only_diffs || has_diffs;
+	let should_print = !options.only_diffs || has_diffs;
 	if should_print {
 		println!("{}", result);
 	}

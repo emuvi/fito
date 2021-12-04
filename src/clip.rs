@@ -7,7 +7,7 @@ pub fn parse<'a>() -> ArgMatches<'a> {
         .about("FileSystem ToolBox.")
         .subcommand(
             SubCommand::with_name("compare")
-                .about("controls testing features")
+                .about("Compares two path, looking for differences.")
                 .arg(
                     Arg::with_name("input")
                         .short("i")
@@ -27,36 +27,36 @@ pub fn parse<'a>() -> ArgMatches<'a> {
                         .help("The path destiny for comparison."),
                 )
                 .arg(
-                    Arg::with_name("only_diffs")
-                        .long("only_diffs")
+                    Arg::with_name("only-diffs")
+                        .long("only-diffs")
                         .takes_value(false)
                         .required(false)
                         .help("Prints only the differences."),
                 )
                 .arg(
-                    Arg::with_name("check_size")
-                        .long("check_size")
+                    Arg::with_name("check-size")
+                        .long("check-size")
                         .takes_value(false)
                         .required(false)
                         .help("Checks for the size of the files."),
                 )
                 .arg(
-                    Arg::with_name("check_created")
-                        .long("check_created")
+                    Arg::with_name("check-created")
+                        .long("check-created")
                         .takes_value(false)
                         .required(false)
                         .help("Checks for the created time of the files."),
                 )
                 .arg(
-                    Arg::with_name("check_modified")
-                        .long("check_modified")
+                    Arg::with_name("check-modified")
+                        .long("check-modified")
                         .takes_value(false)
                         .required(false)
                         .help("Checks for the modified time of the files."),
                 )
                 .arg(
-                    Arg::with_name("check_accessed")
-                        .long("check_accessed")
+                    Arg::with_name("check-accessed")
+                        .long("check-accessed")
                         .takes_value(false)
                         .required(false)
                         .help("Checks for the accessed time of the files."),
