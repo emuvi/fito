@@ -18,6 +18,7 @@ fn main() -> FitoResult<()> {
 		compare(input.into(), output.into(), &Compare{
 			only_diffs, check_size, check_created, check_modified, check_accessed, check_all
 		})?;
+		println!("Finish to compare.");
 	}
 	Ok(())
 }
