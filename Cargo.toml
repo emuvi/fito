@@ -1,6 +1,6 @@
 [package]
 name = "fito"
-description = "Fito is a command toolbox with a series of file system utilities."
+description = "Fito is a command program of a toolbox with a series of file system utilities."
 repository = "https://github.com/emuvi/fito/"
 authors = ["Éverton M. Vieira"]
 license = "LGPL-3.0-only"
