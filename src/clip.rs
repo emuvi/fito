@@ -4,7 +4,7 @@ pub fn parse<'a>() -> ArgMatches<'a> {
     App::new("fito")
         .version(clap::crate_version!())
         .author("Éverton M. Vieira <everton.muvi@gmail.com>")
-        .about("FileSystem ToolBox.")
+        .about("Fitx (File System Toolbox) is a library and a command program that features a toolbox with a series of file system functionalities.")
         .subcommand(
             SubCommand::with_name("compare")
                 .about("Compares two path, looking for differences.")
