@@ -1,3 +1,3 @@
-# Fito
+# Fitx
 
-Fito is a command program of a toolbox with a series of file system utilities.
+Fitx is a library and a command program that features a toolbox with a series of file system functionalities.

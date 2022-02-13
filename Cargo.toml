@@ -1,10 +1,10 @@
 [package]
 name = "fito"
-description = "Fito is a command program of a toolbox with a series of file system utilities."
-repository = "https://github.com/emuvi/fito/"
+description = "Fitx is a library and a command program that features a toolbox with a series of file system functionalities."
+repository = "https://github.com/emuvi/fitx/"
 authors = ["Éverton M. Vieira"]
 license = "LGPL-3.0-only"
-version = "0.1.1"
+version = "0.1.0"
 edition = "2021"
 
 [dependencies]
