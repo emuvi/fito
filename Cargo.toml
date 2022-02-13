@@ -1,5 +1,5 @@
 [package]
-name = "fito"
+name = "fitx"
 description = "Fitx is a library and a command program that features a toolbox with a series of file system functionalities."
 repository = "https://github.com/emuvi/fitx/"
 authors = ["Éverton M. Vieira"]
