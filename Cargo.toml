@@ -4,8 +4,8 @@ description = "Fitx (File System Toolbox) is a library and a command program tha
 repository = "https://github.com/emuvi/fitx/"
 authors = ["Éverton M. Vieira"]
 license = "LGPL-3.0-only"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 
 [dependencies]
-clap = "2"
+clap = { version = "3", features = ["cargo"] }
