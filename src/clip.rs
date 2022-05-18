@@ -5,8 +5,31 @@ pub fn parse() -> ArgMatches {
     .version(clap::crate_version!())
     .author("Éverton M. Vieira <emuvi@outlook.com.br>")
     .about("Fitx (File System Toolbox) is a library and a command program that features a toolbox with a series of file system functionalities.")
+    .subcommand(cmd_find())
     .subcommand(cmd_compare())
     .get_matches()
+}
+
+fn cmd_find<'a>() -> Command<'a> {
+  Command::new("find")
+    .about("Finds files and folders according with setup.")
+    .arg(
+      Arg::new("from")
+        .short('f')
+        .long("from")
+        .value_name("PATH")
+        .takes_value(true)
+        .required(true)
+        .help("The root path for find starts to look."),
+    )
+    .arg(
+      Arg::new("extensions")
+        .short('e')
+        .long("extensions")
+        .takes_value(false)
+        .required(false)
+        .help("Get a list of all extensions on the folder tree."),
+    )
 }
 
 fn cmd_compare<'a>() -> Command<'a> {

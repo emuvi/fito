@@ -4,6 +4,12 @@ mod clip;
 
 fn main() -> RubxResult<()> {
   let args = clip::parse();
+  if let Some(matches) = args.subcommand_matches("find") {
+    let from = matches.value_of("from").unwrap();
+    let extensions = matches.is_present("extensions");
+    fitx::find::start(from.into(), fitx::find::Setup { extensions })?;
+    println!("Finish to find.");
+  }
   if let Some(matches) = args.subcommand_matches("compare") {
     let side_a = matches.value_of("side-a").unwrap();
     let side_b = matches.value_of("side-b").unwrap();
