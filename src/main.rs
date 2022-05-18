@@ -13,10 +13,10 @@ fn main() -> RubxResult<()> {
     let check_modified = matches.is_present("check-modified");
     let check_accessed = matches.is_present("check-accessed");
     let check_all = !check_size && !check_created && !check_modified && !check_accessed;
-    fitx::compare::compare(
+    fitx::compare::start(
       input.into(),
       output.into(),
-      fitx::compare::Compare {
+      fitx::compare::Setup {
         only_diffs,
         check_size,
         check_created,

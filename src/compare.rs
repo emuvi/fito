@@ -2,7 +2,7 @@ use rubx::RubxResult;
 
 use std::path::PathBuf;
 
-pub struct Compare {
+pub struct Setup {
   pub only_diffs: bool,
   pub check_size: bool,
   pub check_created: bool,
@@ -11,7 +11,7 @@ pub struct Compare {
   pub check_all: bool,
 }
 
-pub fn compare(input: PathBuf, output: PathBuf, options: Compare) -> RubxResult<()> {
+pub fn start(input: PathBuf, output: PathBuf, setup: Setup) -> RubxResult<()> {
   if !input.exists() {
     println!("Input not exists.");
     return Ok(());
@@ -21,13 +21,13 @@ pub fn compare(input: PathBuf, output: PathBuf, options: Compare) -> RubxResult<
     return Ok(());
   }
   if input.is_dir() {
-    compare_dirs(input, output, &options)
+    compare_dirs(input, output, &setup)
   } else {
-    compare_file(input, output, &options)
+    compare_file(input, output, &setup)
   }
 }
 
-fn compare_dirs(input: PathBuf, output: PathBuf, options: &Compare) -> RubxResult<()> {
+fn compare_dirs(input: PathBuf, output: PathBuf, setup: &Setup) -> RubxResult<()> {
   if !input.exists() {
     println!(
       "Comparing dirs: '{}' and '{}': Input not exists.",
@@ -65,15 +65,15 @@ fn compare_dirs(input: PathBuf, output: PathBuf, options: &Compare) -> RubxResul
     let file_type = origin.file_type()?;
     let destiny = output.join(origin.file_name());
     if file_type.is_dir() {
-      compare_dirs(origin.path(), destiny, options)?;
+      compare_dirs(origin.path(), destiny, setup)?;
     } else {
-      compare_file(origin.path(), destiny, options)?;
+      compare_file(origin.path(), destiny, setup)?;
     }
   }
   Ok(())
 }
 
-fn compare_file(input: PathBuf, output: PathBuf, options: &Compare) -> RubxResult<()> {
+fn compare_file(input: PathBuf, output: PathBuf, setup: &Setup) -> RubxResult<()> {
   if !input.exists() {
     println!(
       "Comparing file: '{}' with '{}': Input not exists.",
@@ -113,14 +113,14 @@ fn compare_file(input: PathBuf, output: PathBuf, options: &Compare) -> RubxResul
   let mut diff_created: Option<bool> = None;
   let mut diff_modified: Option<bool> = None;
   let mut diff_accessed: Option<bool> = None;
-  if options.check_all || options.check_size {
+  if setup.check_all || setup.check_size {
     let input_size = input_meta.len();
     let output_size = output_meta.len();
     if input_size != output_size {
       diff_size = true;
     }
   }
-  if options.check_all || options.check_created {
+  if setup.check_all || setup.check_created {
     if let Ok(input_time) = input_meta.created() {
       if let Ok(output_time) = output_meta.created() {
         if input_time != output_time {
@@ -131,7 +131,7 @@ fn compare_file(input: PathBuf, output: PathBuf, options: &Compare) -> RubxResul
       }
     }
   }
-  if options.check_all || options.check_modified {
+  if setup.check_all || setup.check_modified {
     if let Ok(input_time) = input_meta.modified() {
       if let Ok(output_time) = output_meta.modified() {
         if input_time != output_time {
@@ -142,7 +142,7 @@ fn compare_file(input: PathBuf, output: PathBuf, options: &Compare) -> RubxResul
       }
     }
   }
-  if options.check_all || options.check_accessed {
+  if setup.check_all || setup.check_accessed {
     if let Ok(input_time) = input_meta.accessed() {
       if let Ok(output_time) = output_meta.accessed() {
         if input_time != output_time {
@@ -181,7 +181,7 @@ fn compare_file(input: PathBuf, output: PathBuf, options: &Compare) -> RubxResul
   } else {
     result.push_str(".");
   }
-  let should_print = !options.only_diffs || has_diffs;
+  let should_print = !setup.only_diffs || has_diffs;
   if should_print {
     println!("{}", result);
   }
