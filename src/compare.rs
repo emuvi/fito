@@ -11,59 +11,59 @@ pub struct Setup {
   pub check_all: bool,
 }
 
-pub fn start(input: PathBuf, output: PathBuf, setup: Setup) -> RubxResult<()> {
-  if !input.exists() {
-    println!("Input not exists.");
+pub fn start(side_a: PathBuf, side_b: PathBuf, setup: Setup) -> RubxResult<()> {
+  if !side_a.exists() {
+    println!("side_a not exists.");
     return Ok(());
   }
-  if !output.exists() {
-    println!("Output not exists.");
+  if !side_b.exists() {
+    println!("side_b not exists.");
     return Ok(());
   }
-  if input.is_dir() {
-    compare_dirs(input, output, &setup)
+  if side_a.is_dir() {
+    compare_dirs(side_a, side_b, &setup)
   } else {
-    compare_file(input, output, &setup)
+    compare_file(side_a, side_b, &setup)
   }
 }
 
-fn compare_dirs(input: PathBuf, output: PathBuf, setup: &Setup) -> RubxResult<()> {
-  if !input.exists() {
+fn compare_dirs(side_a: PathBuf, side_b: PathBuf, setup: &Setup) -> RubxResult<()> {
+  if !side_a.exists() {
     println!(
-      "Comparing dirs: '{}' and '{}': Input not exists.",
-      input.display(),
-      output.display()
+      "Comparing dirs: '{}' and '{}': side_a not exists.",
+      side_a.display(),
+      side_b.display()
     );
     return Ok(());
   }
-  if !input.is_dir() {
+  if !side_a.is_dir() {
     println!(
-      "Comparing dirs: '{}' and '{}': Input is not a directory.",
-      input.display(),
-      output.display()
+      "Comparing dirs: '{}' and '{}': side_a is not a directory.",
+      side_a.display(),
+      side_b.display()
     );
     return Ok(());
   }
-  if !output.exists() {
+  if !side_b.exists() {
     println!(
-      "Comparing dirs: '{}' and '{}': Output not exists.",
-      input.display(),
-      output.display()
+      "Comparing dirs: '{}' and '{}': side_b not exists.",
+      side_a.display(),
+      side_b.display()
     );
     return Ok(());
   }
-  if !output.is_dir() {
+  if !side_b.is_dir() {
     println!(
-      "Comparing dirs: '{}' and '{}': Output is not a directory.",
-      input.display(),
-      output.display()
+      "Comparing dirs: '{}' and '{}': side_b is not a directory.",
+      side_a.display(),
+      side_b.display()
     );
     return Ok(());
   }
-  for origin in std::fs::read_dir(input)? {
+  for origin in std::fs::read_dir(side_a)? {
     let origin = origin?;
     let file_type = origin.file_type()?;
-    let destiny = output.join(origin.file_name());
+    let destiny = side_b.join(origin.file_name());
     if file_type.is_dir() {
       compare_dirs(origin.path(), destiny, setup)?;
     } else {
@@ -73,57 +73,57 @@ fn compare_dirs(input: PathBuf, output: PathBuf, setup: &Setup) -> RubxResult<()
   Ok(())
 }
 
-fn compare_file(input: PathBuf, output: PathBuf, setup: &Setup) -> RubxResult<()> {
-  if !input.exists() {
+fn compare_file(side_a: PathBuf, side_b: PathBuf, setup: &Setup) -> RubxResult<()> {
+  if !side_a.exists() {
     println!(
-      "Comparing file: '{}' with '{}': Input not exists.",
-      input.display(),
-      output.display()
+      "Comparing file: '{}' with '{}': side_a not exists.",
+      side_a.display(),
+      side_b.display()
     );
     return Ok(());
   }
-  if !input.is_file() {
+  if !side_a.is_file() {
     println!(
-      "Comparing file: '{}' with '{}': Input is not a file.",
-      input.display(),
-      output.display()
+      "Comparing file: '{}' with '{}': side_a is not a file.",
+      side_a.display(),
+      side_b.display()
     );
     return Ok(());
   }
-  if !output.exists() {
+  if !side_b.exists() {
     println!(
-      "Comparing file: '{}' with '{}': Output not exists.",
-      input.display(),
-      output.display()
+      "Comparing file: '{}' with '{}': side_b not exists.",
+      side_a.display(),
+      side_b.display()
     );
     return Ok(());
   }
-  if !output.is_file() {
+  if !side_b.is_file() {
     println!(
-      "Comparing file: '{}' with '{}': Output is not a file.",
-      input.display(),
-      output.display()
+      "Comparing file: '{}' with '{}': side_b is not a file.",
+      side_a.display(),
+      side_b.display()
     );
     println!("");
     return Ok(());
   }
-  let input_meta = input.metadata()?;
-  let output_meta = output.metadata()?;
+  let side_a_meta = side_a.metadata()?;
+  let side_b_meta = side_b.metadata()?;
   let mut diff_size = false;
   let mut diff_created: Option<bool> = None;
   let mut diff_modified: Option<bool> = None;
   let mut diff_accessed: Option<bool> = None;
   if setup.check_all || setup.check_size {
-    let input_size = input_meta.len();
-    let output_size = output_meta.len();
-    if input_size != output_size {
+    let side_a_size = side_a_meta.len();
+    let side_b_size = side_b_meta.len();
+    if side_a_size != side_b_size {
       diff_size = true;
     }
   }
   if setup.check_all || setup.check_created {
-    if let Ok(input_time) = input_meta.created() {
-      if let Ok(output_time) = output_meta.created() {
-        if input_time != output_time {
+    if let Ok(side_a_time) = side_a_meta.created() {
+      if let Ok(side_b_time) = side_b_meta.created() {
+        if side_a_time != side_b_time {
           diff_created = Some(true);
         } else {
           diff_accessed = Some(false);
@@ -132,9 +132,9 @@ fn compare_file(input: PathBuf, output: PathBuf, setup: &Setup) -> RubxResult<()
     }
   }
   if setup.check_all || setup.check_modified {
-    if let Ok(input_time) = input_meta.modified() {
-      if let Ok(output_time) = output_meta.modified() {
-        if input_time != output_time {
+    if let Ok(side_a_time) = side_a_meta.modified() {
+      if let Ok(side_b_time) = side_b_meta.modified() {
+        if side_a_time != side_b_time {
           diff_modified = Some(true);
         } else {
           diff_accessed = Some(false);
@@ -143,9 +143,9 @@ fn compare_file(input: PathBuf, output: PathBuf, setup: &Setup) -> RubxResult<()
     }
   }
   if setup.check_all || setup.check_accessed {
-    if let Ok(input_time) = input_meta.accessed() {
-      if let Ok(output_time) = output_meta.accessed() {
-        if input_time != output_time {
+    if let Ok(side_a_time) = side_a_meta.accessed() {
+      if let Ok(side_b_time) = side_b_meta.accessed() {
+        if side_a_time != side_b_time {
           diff_accessed = Some(true);
         } else {
           diff_accessed = Some(false);
@@ -157,8 +157,8 @@ fn compare_file(input: PathBuf, output: PathBuf, setup: &Setup) -> RubxResult<()
   let mut result = String::new();
   result.push_str(&format!(
     "Comparing file: '{}' with '{}': They have",
-    input.display(),
-    output.display()
+    side_a.display(),
+    side_b.display()
   ));
   if diff_size {
     result.push_str(&format!(" diff size"));

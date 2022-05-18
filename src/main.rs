@@ -5,8 +5,8 @@ mod clip;
 fn main() -> RubxResult<()> {
   let args = clip::parse();
   if let Some(matches) = args.subcommand_matches("compare") {
-    let input = matches.value_of("input").unwrap();
-    let output = matches.value_of("output").unwrap();
+    let side_a = matches.value_of("side-a").unwrap();
+    let side_b = matches.value_of("side-b").unwrap();
     let only_diffs = matches.is_present("only-diffs");
     let check_size = matches.is_present("check-size");
     let check_created = matches.is_present("check-created");
@@ -14,8 +14,8 @@ fn main() -> RubxResult<()> {
     let check_accessed = matches.is_present("check-accessed");
     let check_all = !check_size && !check_created && !check_modified && !check_accessed;
     fitx::compare::start(
-      input.into(),
-      output.into(),
+      side_a.into(),
+      side_b.into(),
       fitx::compare::Setup {
         only_diffs,
         check_size,
