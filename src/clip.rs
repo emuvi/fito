@@ -14,6 +14,14 @@ fn cmd_find<'a>() -> Command<'a> {
   Command::new("find")
     .about("Finds files and folders according with setup.")
     .arg(
+      Arg::new("verbose")
+        .short('v')
+        .long("verbose")
+        .takes_value(false)
+        .required(false)
+        .help("Prints the verbose messages."),
+    )
+    .arg(
       Arg::new("from")
         .short('f')
         .long("from")

@@ -4,18 +4,19 @@ use rubx::RubxResult;
 use std::path::PathBuf;
 
 pub struct Setup {
+  pub verbose: bool,
   pub extensions: Option<()>,
   pub by_name: Option<Regex>,
 }
 
 pub fn start(from: PathBuf, setup: Setup) -> RubxResult<()> {
   if setup.extensions.is_some() {
-    println!("Finding extensions:");
+    setup.println("Finding extensions:");
     let mut found: Vec<String> = vec![];
     find_extensions(&from, &mut found, &setup)?;
   }
   if setup.by_name.is_some() {
-    println!("Finding by name:");
+    setup.println("Finding by name:");
     let mut found: Vec<String> = vec![];
     find_by_name(&from, &mut found, &setup)?;
   }
@@ -70,4 +71,12 @@ fn find<F: Fn(&PathBuf, &Setup, &mut Vec<String>)>(
     act(&from, setup, found);
   }
   Ok(())
+}
+
+impl Setup {
+  fn println(&self, message: &str) {
+    if self.verbose {
+      println!("{}", message);
+    }
+  }
 }

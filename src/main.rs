@@ -7,6 +7,7 @@ fn main() -> RubxResult<()> {
   let args = clip::parse();
   if let Some(matches) = args.subcommand_matches("find") {
     let from = matches.value_of("from").unwrap();
+    let verbose = matches.is_present("verbose");
     let extensions = if matches.is_present("extensions") {
       Some(())
     } else {
@@ -22,11 +23,14 @@ fn main() -> RubxResult<()> {
     fitx::find::start(
       from.into(),
       fitx::find::Setup {
+        verbose,
         extensions,
         by_name,
       },
     )?;
-    println!("Finish to find.");
+    if verbose {
+      println!("Finish to find.");
+    }
   }
   if let Some(matches) = args.subcommand_matches("compare") {
     let side_a = matches.value_of("side-a").unwrap();
