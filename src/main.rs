@@ -1,3 +1,4 @@
+use regex::Regex;
 use rubx::RubxResult;
 
 mod clip;
@@ -11,7 +12,13 @@ fn main() -> RubxResult<()> {
     } else {
       None
     };
-    let by_name = None;
+    let by_name = if matches.is_present("by-name") {
+      let by_name = matches.value_of("by-name").unwrap();
+      let regex = Regex::new(by_name)?;
+      Some(regex)
+    } else {
+      None
+    };
     fitx::find::start(
       from.into(),
       fitx::find::Setup {

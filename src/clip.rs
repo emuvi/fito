@@ -30,6 +30,15 @@ fn cmd_find<'a>() -> Command<'a> {
         .required(false)
         .help("Get a list of all extensions on the folder tree."),
     )
+    .arg(
+      Arg::new("by-name")
+        .short('n')
+        .long("by-name")
+        .takes_value(true)
+        .value_name("REGEX")
+        .required(false)
+        .help("Get a list of all files which names satisfies a REGEX expression."),
+    )
 }
 
 fn cmd_compare<'a>() -> Command<'a> {
