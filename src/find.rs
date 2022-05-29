@@ -3,11 +3,12 @@ use rubx::RubxResult;
 use std::path::PathBuf;
 
 pub struct Setup {
-  pub extensions: bool,
+  pub extensions: Option<()>,
+  pub by_name: Option<String>,
 }
 
 pub fn start(from: PathBuf, setup: Setup) -> RubxResult<()> {
-  if setup.extensions {
+  if let Some(()) = setup.extensions {
     println!("Finding extensions:");
     let mut found: Vec<String> = vec![];
     find_extensions(from, &mut found, &setup)?;

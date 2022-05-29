@@ -6,8 +6,19 @@ fn main() -> RubxResult<()> {
   let args = clip::parse();
   if let Some(matches) = args.subcommand_matches("find") {
     let from = matches.value_of("from").unwrap();
-    let extensions = matches.is_present("extensions");
-    fitx::find::start(from.into(), fitx::find::Setup { extensions })?;
+    let extensions = if matches.is_present("extensions") {
+      Some(())
+    } else {
+      None
+    };
+    let by_name = None;
+    fitx::find::start(
+      from.into(),
+      fitx::find::Setup {
+        extensions,
+        by_name,
+      },
+    )?;
     println!("Finish to find.");
   }
   if let Some(matches) = args.subcommand_matches("compare") {
