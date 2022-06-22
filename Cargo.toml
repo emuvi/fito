@@ -8,6 +8,7 @@ version = "0.1.1"
 edition = "2021"
 
 [dependencies]
+chrono = "0.4.19"
 clap = { version = "3", features = ["cargo"] }
 regex = "1"
 rubx = { path = "../rubx" }

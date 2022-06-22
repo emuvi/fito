@@ -5,9 +5,24 @@ pub fn parse() -> ArgMatches {
     .version(clap::crate_version!())
     .author("Éverton M. Vieira <emuvi@outlook.com.br>")
     .about("Fitx (File System Toolbox) is a library and a command program that features a toolbox with a series of file system functionalities.")
+    .subcommand(cmd_show())
     .subcommand(cmd_find())
     .subcommand(cmd_compare())
     .get_matches()
+}
+
+fn cmd_show<'a>() -> Command<'a> {
+  Command::new("show")
+    .about("Shows the information about a path.")
+    .arg(
+      Arg::new("path")
+        .short('p')
+        .long("path")
+        .value_name("PATH")
+        .takes_value(true)
+        .required(true)
+        .help("Of what path the information should be show."),
+    )
 }
 
 fn cmd_find<'a>() -> Command<'a> {

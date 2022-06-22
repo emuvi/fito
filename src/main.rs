@@ -5,6 +5,10 @@ mod clip;
 
 fn main() -> RubxResult<()> {
   let args = clip::parse();
+  if let Some(matches) = args.subcommand_matches("show") {
+    let path = matches.value_of("path").unwrap();
+    fitx::show::info(path.into())?;
+  }
   if let Some(matches) = args.subcommand_matches("find") {
     let from = matches.value_of("from").unwrap();
     let verbose = matches.is_present("verbose");
