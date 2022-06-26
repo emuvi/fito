@@ -46,9 +46,9 @@ fn cmd_find<'a>() -> Command<'a> {
         .help("The root path for find starts to look."),
     )
     .arg(
-      Arg::new("extensions")
+      Arg::new("all-extensions")
         .short('e')
-        .long("extensions")
+        .long("all-extensions")
         .takes_value(false)
         .required(false)
         .help("Get a list of all extensions on the folder tree."),

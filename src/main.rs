@@ -12,11 +12,7 @@ fn main() -> RubxResult<()> {
   if let Some(matches) = args.subcommand_matches("find") {
     let from = matches.value_of("from").unwrap();
     let verbose = matches.is_present("verbose");
-    let extensions = if matches.is_present("extensions") {
-      Some(())
-    } else {
-      None
-    };
+    let all_extensions = matches.is_present("all-extensions");
     let by_name = if matches.is_present("by-name") {
       let by_name = matches.value_of("by-name").unwrap();
       let regex = Regex::new(by_name)?;
@@ -28,7 +24,7 @@ fn main() -> RubxResult<()> {
       from.into(),
       fitx::find::Setup {
         verbose,
-        extensions,
+        all_extensions,
         by_name,
       },
     )?;

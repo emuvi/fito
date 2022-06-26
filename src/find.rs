@@ -5,15 +5,15 @@ use std::path::PathBuf;
 
 pub struct Setup {
   pub verbose: bool,
-  pub extensions: Option<()>,
+  pub all_extensions: bool,
   pub by_name: Option<Regex>,
 }
 
 pub fn start(from: PathBuf, setup: Setup) -> RubxResult<()> {
-  if setup.extensions.is_some() {
+  if setup.all_extensions {
     setup.println("Finding extensions:");
     let mut found: Vec<String> = vec![];
-    find_extensions(&from, &mut found, &setup)?;
+    find_all_extensions(&from, &mut found, &setup)?;
   }
   if setup.by_name.is_some() {
     setup.println("Finding by name:");
@@ -23,7 +23,11 @@ pub fn start(from: PathBuf, setup: Setup) -> RubxResult<()> {
   Ok(())
 }
 
-fn find_extensions(from: &PathBuf, found: &mut Vec<String>, setup: &Setup) -> RubxResult<()> {
+fn find_all_extensions(
+  from: &PathBuf,
+  found: &mut Vec<String>,
+  setup: &Setup,
+) -> RubxResult<()> {
   let act = |from: &PathBuf, _: &Setup, found: &mut Vec<String>| {
     if let Some(ext) = from.extension() {
       if let Some(ext) = ext.to_str() {
