@@ -20,12 +20,19 @@ fn main() -> RubxResult<()> {
     } else {
       None
     };
+    let by_extensions: Option<Vec<String>> = if matches.is_present("by-extensions") {
+      let arg_by_extensions = matches.value_of("by-extensions").unwrap();
+      Some(arg_by_extensions.split(",").map(String::from).collect())
+    } else {
+      None
+    };
     fitx::find::start(
       from.into(),
       fitx::find::Setup {
         verbose,
         all_extensions,
         by_name,
+        by_extensions,
       },
     )?;
     if verbose {

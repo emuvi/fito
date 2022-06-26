@@ -47,7 +47,7 @@ fn cmd_find<'a>() -> Command<'a> {
     )
     .arg(
       Arg::new("all-extensions")
-        .short('e')
+        .short('x')
         .long("all-extensions")
         .takes_value(false)
         .required(false)
@@ -61,6 +61,15 @@ fn cmd_find<'a>() -> Command<'a> {
         .value_name("REGEX")
         .required(false)
         .help("Get a list of all files which names satisfies a REGEX expression."),
+    )
+    .arg(
+      Arg::new("by-extensions")
+        .short('e')
+        .long("by-extensions")
+        .takes_value(true)
+        .value_name("LIST")
+        .required(false)
+        .help("Get a list of all files which extensions are on the LIST."),
     )
 }
 
